@@ -6,7 +6,7 @@ very easy to understand.
 
 # Requirements
 
-- Depends on the `ark` cookbook and the `ruby-build` cookbook.
+- Depends on the `ark` cookbook.
 - Tested on:
   - CentOS 6.3 and 6.4
   - CentOS 5.8
@@ -15,43 +15,32 @@ very easy to understand.
 
 # Usage
 
-Include the `chruby` recipe in your run list.  This will make the
+Include the `chruby` recipe in your run list. This will make the
 chruby tool available to every shell, and make the embedded Ruby from
 the Omnibus install available for use.
 
-Chruby uses `ruby-build` to make Ruby versions available on the OS.
+To install Ruby versions it's recommended that you use a different cookbook.
+There are a couple variants; for different Ruby installers and installation
+approaches. They all work with this cookbook without any special configuration,
+just follow the instructions in their readme's.
 
-The version to build are defined in the node attribute `node['chruby']['rubies']`
+The list currently is (and is always open to new additions):
 
-This is a hash of Ruby versions, with a boolean flag, specifying whether the version should be installed.
+- [ruby-install](https://github.com/tombruijn/chef-ruby-install)
+  - Uses Postmodern's [ruby-install](https://github.com/postmodern/ruby-install)  
+    to install Ruby versions.  
+    Installation of ruby-install and rubies through a recipe. More configuration
+    options through providers.
 
-For example, the cookbook default says:
+- [ruby_install](https://github.com/rosstimson/chef-ruby_install)
+  - Uses Postmodern's [ruby-install](https://github.com/postmodern/ruby-install)
+    to install Ruby versions.  
+    Installation of ruby-install through a recipe and rubies through providers.
 
-    default['chruby']['rubies'] = {'1.9.3-p392' => true}
-
-If you want to disable this, set the value to false in a role or a wrapper cookbook.  For a role:
-
-```
-default_attributes(
-  "chruby" => {
-    "rubies" => {
-      "1.9.3-p392" => false,
-      "1.9.3-p429" => true
-    },
-    "default" => "1.9.3-p429"
-  }
-)
-```
-
-For a wrapper cookbook:
-
-```
-node.set['chruby']['rubies'] = { "1.9.3-p392" => false, "1.9.3-p429" => true }
-```
-
-These Ruby versions are installed using the LWRP provided by the `ruby_build` cookbook.
-
-Ensure you set an explicit dependency on the `chruby` cookbook if you are using a wrapper cookbook.
+- [ruby_build](https://github.com/fnichol/chef-ruby_build)
+  - Uses Sam Stephenson's [ruby-build](https://github.com/sstephenson/ruby-build)
+    to install Ruby versions.  
+    Installation of ruby-build through a recipe and rubies through providers.
 
 # Attributes
 
@@ -60,7 +49,6 @@ Ensure you set an explicit dependency on the `chruby` cookbook if you are using 
 - `node['chruby']['use_rvm_rubies']` - make Rubies installed using RVM available to chruby.
 - `node['chruby']['use_rbenv_rubies']` - make Rubies installed using Rbenv available to chruby.
 - `node['chruby']['auto_switch']` - enable automatic switching between Ruby versions per https://github.com/postmodern/chruby#auto-switching
-- `node['chruby']['rubies']` - an hash of Rubies / Booleans values to install using the `ruby-build` LWRP, and make available to chruby.
 - `node['chruby']['default']` - specify the default Ruby version for every shell.
 - `node['chruby']['user_rubies']` - an array of directories containing custom rubies
 
@@ -68,11 +56,9 @@ Ensure you set an explicit dependency on the `chruby` cookbook if you are using 
 
 ## Default
 
-Installs the chruby utility, and makes it available to every shell.  If Chef was installed with the Omnibus installer, make embedded Ruby available as an option for usage.
-
-## System
-
-Builds and makes available the Ruby versions listed in the `node['chruby']['rubies']` attribute, using the `ruby-build` LWRP.
+Installs the chruby utility, and makes it available to every shell.
+If Chef was installed with the Omnibus installer, make embedded Ruby
+available as an option for usage.
 
 # Author and License
 
